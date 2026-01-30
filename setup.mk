@@ -55,8 +55,8 @@ INC_DIRS+=$(arch_dir)/inc
 C_SRC+=$(addprefix $(arch_dir)/, $(arch_c_srcs))
 ASM_SRC+=$(addprefix $(arch_dir)/, $(arch_s_srcs))
 
-ifeq ($(PLATFORM),rh850-u2a16)
-    LD_FILE := $(src_dir)/linker_rh850-u2a16.ld
+ifeq ($(MEM_MODEL),NON_UNIFIED)
+    LD_FILE := $(src_dir)/ld/linker_non_unified.ld
 else
-    LD_FILE := $(src_dir)/linker.ld
+    LD_FILE := $(src_dir)/linker_unified.ld
 endif

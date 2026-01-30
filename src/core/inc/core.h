@@ -30,12 +30,12 @@
 #define MEM_SIZE PLAT_MEM_SIZE
 #endif
 
-#ifndef CODE_BASE
-#define CODE_BASE PLAT_CODE_BASE
+#ifndef FLASH_BASE
+#define FLASH_BASE PLAT_FLASH_BASE
 #endif
 
-#ifndef CODE_SIZE
-#define CODE_SIZE PLAT_CODE_SIZE
+#ifndef FLASH_SIZE
+#define FLASH_SIZE PLAT_FLASH_SIZE
 #endif
 
 #ifndef RAM_BASE
@@ -44,6 +44,10 @@
 
 #ifndef RAM_SIZE
 #define RAM_SIZE PLAT_RAM_SIZE
+#endif
+
+#ifndef STACKHEAP_SIZE
+#define STACKHEAP_SIZE PLAT_STACKHEAP_SIZE
 #endif
 
 #define UART_ADDR PLAT_UART_ADDR

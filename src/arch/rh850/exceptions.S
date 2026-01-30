@@ -1,4 +1,4 @@
-.section ".intvect", "ax"
+.section ".text", "ax"
 .extern _start
 
 .balign	0x200
@@ -119,18 +119,6 @@ _vector_table:
 	.balign	16
 	syncp
 	jr	_Interrupt_EI // INTn(priority15)
-
-// only used with table reference method
-.section "inttable", "a"
-.balign	0x200
-.global _interrupt_table
-_interrupt_table:
-	.long	_Interrupt_EI 	/* INT0 */
-	.long	_Interrupt_EI 	/* INT1 */
-	.long	_Interrupt_EI 	/* INT2 */
-	.rept	2048 - 3
-	.long	_Interrupt_EI 	/* INTn */
-	.endr
 
 .section ".text", "ax"
 .balign	0x2

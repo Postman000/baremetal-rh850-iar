@@ -12,7 +12,7 @@
     movea lo(\sym), \reg, \reg
 .endm
 
-.section ".text", "ax"
+.section ".start", "ax"
 .balign	2
 .global _start
 _start:
@@ -40,10 +40,6 @@ stall:
     ori 0x2, r2, r2
     ldsr r2, 3, 1
 
-    // set INTBP (regID 4, selID 1)
-    LOAD_ADDR _interrupt_table, r2
-    ldsr r2, 4, 1
-
     // disable memory protections
     mov r0, r2
     ldsr r2, 0, 5
@@ -62,11 +58,11 @@ stall:
     mov CPU_MASTER, r10 // TODO: get value from CPU_MASTER_FIXED
     cmp r5, r10
     bne skip
-    
-    // copy non .text segments to ram
-    LOAD_ADDR __data_start, r20
-    LOAD_ADDR __data_end, r21
-    LOAD_ADDR __copy_start, r22
+
+    // copy .data to RAM
+    LOAD_ADDR __data_load_start, r20
+    LOAD_ADDR __data_load_end, r21
+    LOAD_ADDR __data_start, r22
     jarl copy_data, lp
 
     // clear .bss

@@ -4,12 +4,14 @@
 #include <core.h>
 
 /* Keep consistent with bao-demos/config.c */
-#define PLAT_CODE_BASE 0x7F0000
-#define PLAT_CODE_SIZE 0x10000
+#define PLAT_FLASH_BASE 0x7F0000
+#define PLAT_FLASH_SIZE 0x10000
 
 #define PLAT_RAM_BASE 0xFE100000
 #define PLAT_RAM_SIZE 0x80000
 /* --------------------------------------- */
+
+#define PLAT_STACKHEAP_SIZE 0x2000
 
 #define PLAT_CLK_RLIN  (80000000) // 80 MHz
 #define PLAT_UART_ADDR (0xFFC7C100) // RLIN35 Base
