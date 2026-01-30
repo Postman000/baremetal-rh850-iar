@@ -55,4 +55,8 @@ INC_DIRS+=$(arch_dir)/inc
 C_SRC+=$(addprefix $(arch_dir)/, $(arch_c_srcs))
 ASM_SRC+=$(addprefix $(arch_dir)/, $(arch_s_srcs))
 
-LD_FILE:=$(src_dir)/linker.ld
+ifeq ($(PLATFORM),rh850-u2a16)
+    LD_FILE := $(src_dir)/linker_rh850-u2a16.ld
+else
+    LD_FILE := $(src_dir)/linker.ld
+endif
