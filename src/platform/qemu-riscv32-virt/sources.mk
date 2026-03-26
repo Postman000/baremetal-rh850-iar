@@ -1,1 +1,2 @@
-../qemu-riscv64-virt/sources.mk
+plat_c_srcs:=virt.c
+plat_s_srcs:=

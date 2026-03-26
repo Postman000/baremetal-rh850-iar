@@ -1,134 +1,161 @@
-/** 
+/**
  * SPDX-License-Identifier: Apache-2.0
  *
  * Copyright (c) Bao Project and Contributors. All rights reserved.
  */
 
+#include <plat.h>
+#include <core.h>
+
+; Platform memory definitions for RH850-U2A16
 #define CPU_MASTER  0x0
-#define STACK_SIZE  0x100
+#define STACK_SIZE  0x200
 
-.macro LOAD_ADDR    sym, reg
-    movhi hi(\sym), r0, \reg
-    movea lo(\sym), \reg, \reg
-.endm
+            SECTION     `Region$$Table`:DATA:REORDER:NOROOT(0)
+            EXTERN      __iar_static_base$$GP
+            EXTERN      __iar_static_base$$TP
+            EXTERN      ___iar_data_init2
+            EXTERN      _main
+            PUBLIC      _bss_start
+            PUBLIC      _bss_end
+            PUBLIC      _stack_base
+            PUBLIC      clear_mpu
+            PUBLIC      _boot_clear
 
-.section ".start", "ax"
-.balign	2
-.global _start
+            SECTION     .start:CODE:ROOT(6)
+            CODE
+            PUBLIC      _start
+
+/**
+ * Not following any ABI for registers in this boot code.
+ * The following registers are however reserved:
+ * Register r10 is reserved to hold the CPU ID
+ * Register r11 is reserved to hold the master CPU ID
+ * Register r12 is reserved to hold the CPU struct size
+ * Register r13 is reserved to hold the CPU struct pointer
+ * Register r31 is reserved as link pointer when calling a routine
+ *
+ * The remaining code must use r20-r29 as scratchpad registers in the main
+ * flow and r15-r19 as arguments and return values. r10-r14 are used to hold constants.
+ */
+
 _start:
-    // Disable interrupts
-    di
+    di  ; Disable interrupts
+     MOV         __iar_static_base$$TP, TP
+    MOV         __iar_static_base$$GP, GP
 
-    // get current CPU
-    // r5 = PEID
+    ; get current CPU
+    ; r5 = PEID
     stsr 0, r5, 2
 
-stall:
-    mov 3, r20
-    cmp r5, r20
-    be stall
-    mov 2, r20
-    cmp r5, r20
-    be stall
-
-    // set PSW.EBV
+    ; set PSW.EBV
     mov 0x3f08020, r2
-    ldsr r2, 5, 0 
+    ldsr r2, 5, 0
 
-    // set EBASE (regID 3, selID 1)
-    LOAD_ADDR _vector_table, r2
-    ori 0x2, r2, r2
-    ldsr r2, 3, 1
+    ; set EBASE (regID 3, selID 1)
+    mov         r0, r2
+    ldsr        r2, 0, 5
+    ldsr        r0, 8, 5
+    ldsr        r0, 9, 5
+    ldsr        r0, 12, 5
+    ldsr        r0, 0, 1
 
-    // disable memory protections
-    mov r0, r2
-    ldsr r2, 0, 5
+    jarl        clear_mpu, lp
 
-    // cover all memory with protection check
-    ldsr r0, 8, 5 // Set the address to MCA
-    ldsr r0, 9, 5 // Set the size to MCS
+    ; ================= 主核判断 =================
+    mov         CPU_MASTER, r10
+    cmp         r5, r10
+    bne         _wait_master
 
-    // individual protections per cpu TODO should it be otherwise?
-    ldsr r0, 12, 5 // set MCI to 0
-    ldsr r0, 0, 1 // set SPID host SPID 0
+    ; ================= 主核独占：数据搬运 (Bao 方案) =================
+    ; 借助 IAR 的 ___iar_data_init2 自动解析 Region$$Table 搬运 .data
+    MOV         SFE(`Region$$Table`), R7
+    MOV         SFB(`Region$$Table`), R6
+    jarl        ___iar_data_init2, lp
 
-    jarl clear_mpu, lp
+    ; ================= 主核独占：BSS 清零 =================
+    mov         _bss_start, r15
+    mov         _bss_end, r16
+    jarl        _boot_clear, lp
 
-    // check if current CPU is CPU_MASTER
-    mov CPU_MASTER, r10 // TODO: get value from CPU_MASTER_FIXED
-    cmp r5, r10
-    bne skip
+    ; ================= 主核独占：释放同步信号 =================
+    mov         _baremetal_sync_flag, r20
+    mov         0xBA0B007, r21
+    st.w        r21, 0[r20]
+    br          _setup_stack
 
-    // copy .data to RAM
-    LOAD_ADDR __data_load_start, r20
-    LOAD_ADDR __data_load_end, r21
-    LOAD_ADDR __data_start, r22
-    jarl copy_data, lp
+    ; ================= 从核：死循环等待发令枪 =================
+_wait_master:
+    mov         _baremetal_sync_flag, r20
+    ld.w        0[r20], r21
+    mov         0xBA0B007, r22
+    cmp         r21, r22
+    bne         _wait_master
 
-    // clear .bss
-    LOAD_ADDR __bss_start, r20
-    LOAD_ADDR __bss_end, r21
-    jarl boot_clear, lp
+    ; ================= 所有核共同执行：配置堆栈 =================
+    _setup_stack:
+    ; 动态分配各自栈空间 SP = _stack_base + (PEID + 1) * STACK_SIZE
+    mov         _stack_base, r20
+    mov         STACK_SIZE, r21
+    mulh        r5, r21
+    add         r21, r20
+    mov         STACK_SIZE, r21
+    add         r21, r20
+    mov         r20, sp
 
-    // clear stack/heap region to avoid unitialized issues
-    LOAD_ADDR _stack_base, r20
-    LOAD_ADDR _heap_base, r21
-    jarl boot_clear, lp
-
-skip:
-    // Initialize stack pointer
-    LOAD_ADDR _stack_base, r20
-    mov STACK_SIZE, r21
-    add r21, r20
-    mulh r5, r21
-    add r21, r20
-    mov r20, sp
-
-    jr __init
-
-// r20: start of region
-// r21: end of region
-boot_clear:
-boot_clear_1:
-    cmp r21, r20
-    bge boot_clear_exit
-    st.w r0, 0[r20]
-    addi 4, r20, r20
-    br boot_clear_1
-boot_clear_exit:
-    jmp [lp]
+    ; 跳转到 C 语言 main
+    jr          _main
 
 
-// r20: start of the source region
-// r21: end of the source region
-// r22: start of the destination region
-// uses r23
-copy_data:
-copy_data_1:
-    ld.w 0[r20], r23
-    st.w r23, 0[r22]
-    addi 4, r20, r20
-    addi 4, r22, r22
-    cmp r20, r21
-    bne copy_data_1
-    jmp [lp]
+/**
+ * Clear from [r15] to [r16]
+ */
+_boot_clear:
+    cmp         r16, r15
+    bge         _boot_clear_exit
+    st.w        r0, 0[r15]
+    addi        4, r15, r15
+    br          _boot_clear
+_boot_clear_exit:
+    jmp         [lp]
 
 
+/**
+ * Clear MPU SRs
+ */
 clear_mpu:
-    mov r0, r20
+    mov         r0, r20
+    stsr        2, r21, 5
+    andi        0x1F, r21, r21
+    addi        1, r21, r21
 clear_mpu_1:
-    addi 0x20, r0, r21
-    sub r20, r21
-    cmp r0, r21  // TODO # of mpu entries platform defined
-    be clear_mpu_exit
-
-    ldsr r20, 16, 5 // set MPIDX
-
-    ldsr r0, 20, 5 // set MPLA
-    ldsr r0, 21, 5 // set MPUA
-    ldsr r0, 22, 5 // set MPAT
-
-    addi 1, r20, r20
-    bne clear_mpu_1
+    cmp         r20, r21
+    be          clear_mpu_exit
+    ldsr        r20, 16, 5
+    ldsr        r0, 20, 5
+    ldsr        r0, 21, 5
+    ldsr        r0, 22, 5
+    addi        1, r20, r20
+    br          clear_mpu_1
 clear_mpu_exit:
-    jmp [lp]
+    jmp         [lp]
+
+
+; =========================================================
+; IAR 物理地标 (完全参考 Bao 方案)
+; =========================================================
+            SECTION .mark_bss_start:DATA:ROOT(6)
+_bss_start:
+
+            SECTION .mark_bss_end:DATA:ROOT(6)
+_bss_end:
+
+            SECTION .mark_stack_base:DATA:ROOT(6)
+_stack_base:
+          
+            SECTION .bss:DATA:NOROOT(2)
+            PUBLIC _baremetal_sync_flag
+_baremetal_sync_flag:
+            DS8 4
+
+            END

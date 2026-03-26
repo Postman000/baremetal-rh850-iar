@@ -1,0 +1,46 @@
+###############################################################################
+#
+# IAR Assembler V3.20.1.2142/W64 for RH850                26/Mar/2026  10:50:58
+# Copyright 2012-2025 IAR Systems AB.
+#
+#    Core         =  g4mh
+#    Source file  =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\arch\rh850\start.S
+#    Command line =
+#        -f
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\start.o.rsp
+#        (D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\arch\rh850\start.S
+#        --core g4mh --data_model large --fpu double --double=64 -o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir
+#        -M<> -r -ld
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\List\ -I
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\arch\rh850\inc\
+#        -I D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\core\inc\ -I
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\drivers\rh850-u2a16_ostm\inc\
+#        -I
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\platform\rh850-u2a16\inc\
+#        -I D:\iar\ewrh850c-3.20.1\rh850\inc\c\ -D__ASSEMBLER__)
+#        --diagnostics_format=sarif_stdout --dependencies=n
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\start.o.iar_deps
+#        --dynamic_output
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\start.o.iar_dynout
+#    List file    =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\List\start.lst
+#    Object file  =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\start.o
+#
+###############################################################################
+
+##############################################################################
+# Module start                                                               #
+##############################################################################
+
+ 
+   4 bytes in section .bss     , module start
+ 220 bytes in section .start   , module start
+ 
+ 220 bytes of CODE memory  in module start
+   4 bytes of DATA memory  in module start
+
+Errors: none
+Warnings: none

@@ -1,199 +1,363 @@
-.section ".text", "ax"
-.extern _start
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) Bao Project and Contributors. All rights reserved.
+ */
 
-.balign	0x200
-.global _vector_table
+#include <plat.h>
+#include <core.h>
+
+            SECTION .text:CODE:NOROOT(6)
+            EXTERN _start
+            EXTERN _irq_handle
+            
+            PUBLIC _vector_table
+            PUBLIC select_xxret
+            PUBLIC _handle_exception
+            PUBLIC _Interrupt_EI
+
+            ALIGN 1               ; 2-byte alignment
+
 _vector_table:
-	jr	_start // RESET
+            jr _start                 ; RESET
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_handle_exception // SYSERR  Guest
+            ALIGN 4               ; 16-byte alignment (2^4 = 16)
+            syncp
+            jr _handle_exception      ; SYSERR Guest
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // (R.F.U)
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; (R.F.U)
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // FETRAP  Guest?
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; FETRAP Guest?
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // TRAP0  Guest?
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; TRAP0 Guest?
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // TRAP1  Guest?
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; TRAP1 Guest?
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // RIE
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; RIE
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_handle_exception // FPP/FPI
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _handle_exception      ; FPP/FPI
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // UCPOP
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; UCPOP
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // MIP/MDP  Guest
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; MIP/MDP Guest
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // RIE
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; RIE
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // PIE
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; PIE
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // MAE
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; MAE
+            nop
+            nop
+            nop
 
-	.balign	16
-	jr	_handle_exception // UCPOP
+            ALIGN 4               ; 16-byte alignment
+            jr _handle_exception      ; UCPOP
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_handle_exception // FENMI
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _handle_exception      ; FENMI
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_handle_exception // FEINT
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _handle_exception      ; FEINT
+            nop
+            nop
+            nop
 
-	// only used with direct vector method
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority0)
+            ; only used with direct vector method
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority0)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority1)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority1)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority2)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority2)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority3)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority3)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority4)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority4)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority5)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority5)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority6)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority6)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority7)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority7)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority8)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority8)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority9)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority9)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority10)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority10)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority11)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority11)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority12)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority12)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority13)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority13)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority14)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority14)
+            nop
+            nop
+            nop
 
-	.balign	16
-	syncp
-	jr	_Interrupt_EI // INTn(priority15)
+            ALIGN 4               ; 16-byte alignment
+            syncp
+            jr _Interrupt_EI          ; INTn(priority15)
+            nop
+            nop
+            nop
 
-.section ".text", "ax"
-.balign	0x2
+            ALIGN 1               ; 2-byte alignment
 
+/**
+ * Select between eiret and feret based on PSW.NP flag
+ */
 select_xxret:
-	stsr 5, r31, 0
-	andi 0x80, r31, r31 // PSW.NP
-	cmp r0, r31
-	be ei_ret
-	stsr 28, r31, 0
-  	feret
+            stsr 5, r31, 0
+            andi 0x80, r31, r31       ; PSW.NP
+            cmp r0, r31
+            be ei_ret
+            stsr 28, r31, 0
+            feret
 ei_ret:
-	stsr 28, r31, 0
-	eiret
+            stsr 28, r31, 0
+            eiret
 
-.macro SAVE_REGS
-    addi 124, r0, r20
-    sub r20, sp
+/**
+ * Save registers to stack
+ * Uses r20 as scratch register
+ */
+save_regs:
+            addi 124, r0, r20
+            sub r20, sp
 
-    st.dw r0,    0[sp]
-    st.dw r2,    8[sp]
-    st.dw r4,   16[sp]
-    st.dw r6,   24[sp]
-    st.dw r8,   32[sp]
-    st.dw r10,  40[sp]
-    st.dw r12,  48[sp]
-    st.dw r14,  56[sp]
-    st.dw r16,  64[sp]
-    st.dw r18,  72[sp]
-    st.dw r20,  80[sp]
-    st.dw r22,  88[sp]
-    st.dw r24,  96[sp]
-    st.dw r26, 104[sp]
-    st.dw r28, 112[sp]
-    st.dw r30, 120[sp]
-.endm
+            st.dw r0,    0[sp]
+            st.dw r2,    8[sp]
+            st.dw r4,   16[sp]
+            st.dw r6,   24[sp]
+            st.dw r8,   32[sp]
+            st.dw r10,  40[sp]
+            st.dw r12,  48[sp]
+            st.dw r14,  56[sp]
+            st.dw r16,  64[sp]
+            st.dw r18,  72[sp]
+            st.dw r20,  80[sp]
+            st.dw r22,  88[sp]
+            st.dw r24,  96[sp]
+            st.dw r26, 104[sp]
+            st.dw r28, 112[sp]
+            st.dw r30, 120[sp]
+            jmp [lp]
 
-.macro RESTORE_REGS 
-    ld.dw   0[sp], r0
-    ld.w    8[sp], r2 // dont restore r3 which is the sp
-    ld.dw  16[sp], r4
-    ld.dw  24[sp], r6
-    ld.dw  32[sp], r8
-    ld.dw  40[sp], r10
-    ld.dw  48[sp], r12
-    ld.dw  56[sp], r14
-    ld.dw  64[sp], r16
-    ld.dw  72[sp], r18
-    ld.dw  80[sp], r20
-    ld.dw  88[sp], r22
-    ld.dw  96[sp], r24
-    ld.dw 104[sp], r26
-    ld.dw 112[sp], r28
-    ld.dw 120[sp], r30
+/**
+ * Restore registers from stack
+ * Uses r20 as scratch register
+ */
+restore_regs:
+            ld.dw   0[sp], r0
+            ld.w    8[sp], r2           ; dont restore r3 which is the sp
+            ld.dw  16[sp], r4
+            ld.dw  24[sp], r6
+            ld.dw  32[sp], r8
+            ld.dw  40[sp], r10
+            ld.dw  48[sp], r12
+            ld.dw  56[sp], r14
+            ld.dw  64[sp], r16
+            ld.dw  72[sp], r18
+            ld.dw  80[sp], r20
+            ld.dw  88[sp], r22
+            ld.dw  96[sp], r24
+            ld.dw 104[sp], r26
+            ld.dw 112[sp], r28
+            ld.dw 120[sp], r30
 
-    addi 124, r0, r20
-    add r20, sp
-.endm
+            addi 124, r0, r20
+            add r20, sp
+            jmp [lp]
 
-.extern _irq_handle
-
+/**
+ * Exception handler entry point
+ */
 _handle_exception:
-	br _handle_exception
+            br _handle_exception
 
+/**
+ * External interrupt handler
+ */
 _Interrupt_EI:
+            ; Save registers
+            addi 124, r0, r20
+            sub r20, sp
 
-	SAVE_REGS
-	
-	// copy int_id to r6
-	stsr 13, r6, 0 // get int cause from EEIC
-	mov 0x7FF, r20
-	and r20, r6 // mask EIINT source
+            st.dw r0,    0[sp]
+            st.dw r2,    8[sp]
+            st.dw r4,   16[sp]
+            st.dw r6,   24[sp]
+            st.dw r8,   32[sp]
+            st.dw r10,  40[sp]
+            st.dw r12,  48[sp]
+            st.dw r14,  56[sp]
+            st.dw r16,  64[sp]
+            st.dw r18,  72[sp]
+            st.dw r20,  80[sp]
+            st.dw r22,  88[sp]
+            st.dw r24,  96[sp]
+            st.dw r26, 104[sp]
+            st.dw r28, 112[sp]
+            st.dw r30, 120[sp]
+    
+            ; copy int_id to r6
+            stsr 13, r6, 0              ; get int cause from EEIC
+            mov 0x7FF, r20
+            and r20, r6                 ; mask EIINT source
 
-  	jarl _irq_handle, lp
+            jarl _irq_handle, lp
 
-  	RESTORE_REGS
+            ; Restore registers
+            ld.dw   0[sp], r0
+            ld.w    8[sp], r2
+            ld.dw  16[sp], r4
+            ld.dw  24[sp], r6
+            ld.dw  32[sp], r8
+            ld.dw  40[sp], r10
+            ld.dw  48[sp], r12
+            ld.dw  56[sp], r14
+            ld.dw  64[sp], r16
+            ld.dw  72[sp], r18
+            ld.dw  80[sp], r20
+            ld.dw  88[sp], r22
+            ld.dw  96[sp], r24
+            ld.dw 104[sp], r26
+            ld.dw 112[sp], r28
+            ld.dw 120[sp], r30
 
-  	eiret
+            addi 124, r0, r20
+            add r20, sp
+
+            eiret
+
+            END

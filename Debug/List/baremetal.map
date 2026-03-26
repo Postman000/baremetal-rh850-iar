@@ -1,0 +1,354 @@
+###############################################################################
+#
+# IAR ELF Linker V3.20.1.2142/W64 for RH850               26/Mar/2026  10:50:59
+# Copyright 2012-2025 IAR Systems AB.
+# LMS Cloud License (LMSC 2.1.1)
+#
+#    Output file  =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Exe\baremetal.out
+#    Map file     =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\List\baremetal.map
+#    Command line =
+#        -f
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Exe\baremetal.out.rsp
+#        (D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\exceptions.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\init.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\intc.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\core_5045193001576873880.dir\irq.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\irq.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\src_15346631385785888340.dir\main.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\renesas_rlin3_4423590798727589495.dir\renesas_rlin3.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\core_5045193001576873880.dir\retarget.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850-u2a16_ostm_7577924563591620785.dir\rh850-u2a16_ostm.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\start.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850-u2a16_14826732722053375680.dir\u2a16.o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\core_5045193001576873880.dir\virtio_console.o
+#        --no_out_extension -o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Exe\baremetal.out
+#        --map
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\List\baremetal.map
+#        --config
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\others\link\lnkr7f702300b.icf
+#        --config_def CSTACK_SIZE=0x1000 --config_def HEAP_SIZE=0x1000 --vfe
+#        --entry _start --debug_lib --text_out locale --config_def
+#        _SELF_SIZE=0x8000) --diagnostics_format=sarif_stdout --dependencies=n
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Exe\baremetal.out.iar_deps
+#        --dynamic_output
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Exe\baremetal.out.iar_dynout
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+__SystemLibrary            = DLib
+__core                     = g4
+__data_model               = large
+__dlib_file_descriptor     = 0
+__dlib_full_locale_support = 0
+__dlib_version             = 6
+__double_size              = 64
+__eight_byte_alignment     = disabled
+__enum_size                = *
+__fpu                      = double
+__reg_ep                   = frame
+__reg_gp_lock              = 0
+__reg_r5                   = brel_const
+__ropi                     = -
+__rt_version               = 2
+
+
+*******************************************************************************
+*** HEAP SELECTION
+***
+
+The basic heap was selected because --advanced_heap
+was not specified and the application did not appear to
+be primarily optimized for speed.
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+define block TP_BLOCK
+   with maximum size = 64K, alignment = 8 {
+       ro section .sconst,  ro section .pcconst16 };
+define block TP23_BLOCK
+   with maximum size = 8M, alignment = 8 {
+       ro section .sconst23,  ro section .pcconst23, midway block TP_BLOCK };
+define block APP_ROM_IMG
+   with fixed order {
+       ro section .start,  ro section .vector_table,  ro code,
+       ro section .text*,  ro section .const*,  ro section .rodata*,
+       ro section .pcconst32,  ro section .iar.init_table,  block TP23_BLOCK,
+       section *_init };
+"A0":  place at start of [from 0x7f'0000 to 0x7f'ffff] {  block APP_ROM_IMG };
+define block SBSS_BLOCK
+   with maximum size = 64K, alignment = 8 {
+       rw section .sbss*,  rw section .sdata* };
+define block CSTACK with size = 8K, alignment = 16 { };
+define block APP_RAM_IMG
+   with fixed order {
+       rw,  block SBSS_BLOCK,  rw section .mark_bss_start,  zi section .bss,
+       zi,  rw section .mark_bss_end,  rw section .mark_stack_base,
+       block CSTACK };
+"A1":  place at start of [from 0xfe10'0000 to 0xfe17'ffff] {
+           block APP_RAM_IMG };
+do not initialize {  section .bss,  section .sbss,  zi };
+initialize by copy {  rw };
+
+No sections matched the following patterns:
+
+  ro section .const*        in block APP_ROM_IMG
+  ro section .pcconst16     in block TP_BLOCK
+  ro section .pcconst23     in block TP23_BLOCK
+  ro section .rodata*       in block APP_ROM_IMG
+  ro section .sconst        in block TP_BLOCK
+  ro section .sconst23      in block TP23_BLOCK
+  ro section .vector_table  in block APP_ROM_IMG
+  rw section .sbss*         in block SBSS_BLOCK
+  rw section .sdata*        in block SBSS_BLOCK
+
+
+  Section              Kind         Address  Alignment    Size  Object
+  -------              ----         -------  ---------    ----  ------
+"A0":                                                    0x8dc
+  APP_ROM_IMG                     0x7f'0000              0x8dc  <Block>
+    .start             ro code    0x7f'0000         64    0xdc  start.o [5]
+    .text              ro code    0x7f'00dc          4   0x170  intc.o [5]
+    .text              ro code    0x7f'024c          4    0x14  irq.o [1]
+    .text              ro code    0x7f'0260          4    0x7a  irq.o [5]
+    .text              ro code    0x7f'02dc          4   0x210  main.o [6]
+    .text              ro code    0x7f'04ec          4    0x3c  printf.o [8]
+    .text              ro code    0x7f'0528          4    0x44  u2a16.o [3]
+    .text              ro code    0x7f'056c          4   0x1ae  xprintftiny.o [8]
+    .text              ro code    0x7f'071c          4     0x6  renesas_rlin3.o [2]
+    .text              ro code    0x7f'0724          4    0x14  rh850-u2a16_ostm.o [4]
+    .text              ro code    0x7f'0738          4    0x12  strlen.o [8]
+    .text              ro code    0x7f'074c          4    0x22  data_init.o [8]
+    .text              ro code    0x7f'0770          4    0x1c  xprout.o [8]
+    .text              ro code    0x7f'078c          4    0x20  putchar.o [8]
+    .text              ro code    0x7f'07ac          4    0x14  __dbg_xxwrite.o [7]
+    .text              ro code    0x7f'07c0          4    0x20  __dbg_xxdwrite.o [7]
+    .text              ro code    0x7f'07e0          4     0x2  __dbg_break.o [7]
+    .text              ro code    0x7f'07e4          4    0x26  copy_init.o [8]
+    .text              ro code    0x7f'080a          2    0x2c  shll64.o [8]
+    .text              ro code    0x7f'0836          2    0x20  switch.o [8]
+    .pcconst32         const      0x7f'0858          4    0x10  main.o [6]
+    .pcconst32         const      0x7f'0868          4     0xc  main.o [6]
+    .pcconst32         const      0x7f'0874          2     0xe  main.o [6]
+    .pcconst32         const      0x7f'0882                0xb  main.o [6]
+    .pcconst32         const      0x7f'088d               0x1b  main.o [6]
+    .pcconst32         const      0x7f'08a8                0xb  main.o [6]
+    .iar.init_table    const      0x7f'08b4          4    0x10  - Linker created -
+    TP23_BLOCK                    0x7f'08c8          8     0x0  <Block>
+      TP_BLOCK                    0x7f'08c8          8     0x0  <Block>
+    Initializer bytes  const      0x7f'08c8          4    0x14  <for rw-1>
+                                - 0x7f'08dc              0x8dc
+
+"A1":                                                   0x2080
+  APP_RAM_IMG                   0xfe10'0000             0x2080  <Block>
+    rw-1                        0xfe10'0000          4    0x14  <Init block>
+      .data            inited   0xfe10'0000          4     0x4  intc.o [5]
+      .data            inited   0xfe10'0004          4     0x4  intc.o [5]
+      .data            inited   0xfe10'0008          4     0x4  irq.o [5]
+      .data            inited   0xfe10'000c          4     0x4  u2a16.o [3]
+      .data            inited   0xfe10'0010          4     0x4  u2a16.o [3]
+    SBSS_BLOCK                  0xfe10'0018          8     0x0  <Block>
+    .mark_bss_start    rw data  0xfe10'0040         64     0x0  start.o [5]
+    .bss               uninit   0xfe10'0040          4  0x2000  irq.o [1]
+    .bss               uninit   0xfe10'2040          4     0x4  main.o [6]
+    .bss               uninit   0xfe10'2044          4     0x4  start.o [5]
+    .bss               uninit   0xfe10'2048                0x1  main.o [6]
+    .mark_bss_end      rw data  0xfe10'2080         64     0x0  start.o [5]
+    .mark_stack_base   rw data  0xfe10'2080         64     0x0  start.o [5]
+                              - 0xfe10'2080             0x2080
+
+Unused ranges:
+
+  From  To  Size
+  ----  --  ----
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address      Size
+          -------      ----
+Copy (___iar_copy_init2)
+    1 source range, total size 0x14:
+            0x7f'08c8  0x14
+    1 destination range, total size 0x14:
+          0xfe10'0000  0x14
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module              ro code  ro data  rw data
+    ------              -------  -------  -------
+command line/config:
+    ---------------------------------------------
+    Total:
+
+D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\core_5045193001576873880.dir: [1]
+    irq.o                    20             8'192
+    ---------------------------------------------
+    Total:                   20             8'192
+
+D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\renesas_rlin3_4423590798727589495.dir: [2]
+    renesas_rlin3.o           6
+    ---------------------------------------------
+    Total:                    6
+
+D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850-u2a16_14826732722053375680.dir: [3]
+    u2a16.o                  68        8        8
+    ---------------------------------------------
+    Total:                   68        8        8
+
+D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850-u2a16_ostm_7577924563591620785.dir: [4]
+    rh850-u2a16_ostm.o       20
+    ---------------------------------------------
+    Total:                   20
+
+D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir: [5]
+    intc.o                  368        8        8
+    irq.o                   122        4        4
+    start.o                 220                 4
+    ---------------------------------------------
+    Total:                  710       12       16
+
+D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\src_15346631385785888340.dir: [6]
+    main.o                  528       91        5
+    ---------------------------------------------
+    Total:                  528       91        5
+
+dbgrh4n4dfpu64nd.a: [7]
+    __dbg_break.o             2
+    __dbg_xxdwrite.o         32
+    __dbg_xxwrite.o          20
+    ---------------------------------------------
+    Total:                   54
+
+dlrh4n4dfpu64n.a: [8]
+    copy_init.o              38
+    data_init.o              34
+    printf.o                 60
+    putchar.o                32
+    shll64.o                 44
+    strlen.o                 18
+    switch.o                 32
+    xprintftiny.o           430
+    xprout.o                 28
+    ---------------------------------------------
+    Total:                  716
+
+    Gaps                     12        3      103
+    Linker created                    16
+-------------------------------------------------
+    Grand Total:          2'134      130    8'324
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                       Address    Size  Type      Object
+-----                       -------    ----  ----      ------
+.iar.init_table$$Base     0x7f'08b4           --   Gb  - Linker created -
+.iar.init_table$$Limit    0x7f'08c4           --   Gb  - Linker created -
+APP_RAM_IMG$$Base       0xfe10'0000           --   Gb  - Linker created -
+APP_RAM_IMG$$Limit      0xfe10'2080           --   Gb  - Linker created -
+APP_ROM_IMG$$Base         0x7f'0000           --   Gb  - Linker created -
+APP_ROM_IMG$$Limit        0x7f'08dc           --   Gb  - Linker created -
+Region$$Table$$Base       0x7f'08b4           --   Gb  - Linker created -
+Region$$Table$$Limit      0x7f'08c4           --   Gb  - Linker created -
+SBSS_BLOCK$$Base        0xfe10'0018           --   Gb  - Linker created -
+SBSS_BLOCK$$Limit       0xfe10'0018           --   Gb  - Linker created -
+TP_BLOCK$$Base            0x7f'08c8           --   Gb  - Linker created -
+TP_BLOCK$$Limit           0x7f'08c8           --   Gb  - Linker created -
+__COM_shll_64_32          0x7f'080a          Code  Gb  shll64.o [8]
+__PrintfTiny              0x7f'0594   0x186  Code  Gb  xprintftiny.o [8]
+__Prout                   0x7f'0770    0x1c  Code  Gb  xprout.o [8]
+___DebugBreak             0x7f'07e0     0x2  Code  Gb  __dbg_break.o [7]
+___dwrite                 0x7f'07c0    0x20  Code  Gb  __dbg_xxdwrite.o [7]
+___iar_copy_init2         0x7f'07e4    0x26  Code  Gb  copy_init.o [8]
+___iar_data_init2         0x7f'074c    0x22  Code  Gb  data_init.o [8]
+___write                  0x7f'07ac    0x14  Code  Gb  __dbg_xxwrite.o [7]
+__iar_static_base$$GP   0xfe10'0018           --   Gb  - Linker created -
+__iar_static_base$$TP     0x7f'08c8           --   Gb  - Linker created -
+__iar_switch_small        0x7f'0836          Code  Gb  switch.o [8]
+_baremetal_sync_flag    0xfe10'2044          Data  Gb  start.o [5]
+_boot_clear               0x7f'00a2          Code  Gb  start.o [5]
+_bss_end                0xfe10'2080          Data  Gb  start.o [5]
+_bss_start              0xfe10'0040          Data  Gb  start.o [5]
+_cpu_is_master            0x7f'02f0    0x16  Code  Lc  main.o [6]
+_get_cpuid                0x7f'0268     0xa  Code  Lc  irq.o [5]
+_get_cpuid                0x7f'02e4     0xa  Code  Lc  main.o [6]
+_get_peid                 0x7f'0260     0x6  Code  Lc  irq.o [5]
+_get_peid                 0x7f'02dc     0x6  Code  Lc  main.o [6]
+_intc1_hw               0xfe10'0000     0x4  Data  Gb  intc.o [5]
+_intc2_hw               0xfe10'0004     0x4  Data  Gb  intc.o [5]
+_intc_set_enable          0x7f'0114    0xc6  Code  Gb  intc.o [5]
+_intc_set_prio            0x7f'01dc    0x6e  Code  Gb  intc.o [5]
+_intc_set_trgt            0x7f'00dc    0x36  Code  Gb  intc.o [5]
+_ipi_handler              0x7f'0368    0x4c  Code  Gb  main.o [6]
+_ipir                   0xfe10'0008     0x4  Data  Lc  irq.o [5]
+_irq_clear_ipi            0x7f'02c0    0x1a  Code  Gb  irq.o [5]
+_irq_enable               0x7f'0274    0x30  Code  Gb  irq.o [5]
+_irq_handlers           0xfe10'0040  0x2000  Data  Gb  irq.o [1]
+_irq_send_ipi             0x7f'02b0     0xe  Code  Gb  irq.o [5]
+_irq_set_handler          0x7f'024c    0x14  Code  Gb  irq.o [1]
+_irq_set_prio             0x7f'02a4     0xc  Code  Gb  irq.o [5]
+_main                     0x7f'0408    0xe4  Code  Gb  main.o [6]
+_out                      0x7f'056c    0x28  Code  Lc  xprintftiny.o [8]
+_print_lock             0xfe10'2040     0x4  Data  Gb  main.o [6]
+_printf                   0x7f'04ec    0x3c  Code  Gb  printf.o [8]
+_putchar                  0x7f'078c    0x20  Code  Gb  putchar.o [8]
+_renesas_rlin3_clear_rxirq
+                          0x7f'0720     0x2  Code  Gb  renesas_rlin3.o [2]
+_renesas_rlin3_enable_rxirq
+                          0x7f'071c     0x2  Code  Gb  renesas_rlin3.o [2]
+_rh850_u2a16_OSTMn_set    0x7f'0724    0x14  Code  Gb  rh850-u2a16_ostm.o [4]
+_spin_lock                0x7f'0310    0x1a  Code  Lc  main.o [6]
+_spin_unlock              0x7f'032c     0x6  Code  Lc  main.o [6]
+_stack_base             0xfe10'2080          Data  Gb  start.o [5]
+_start                    0x7f'0000          Code  Gb  start.o [5]
+_strlen                   0x7f'0738    0x12  Code  Gb  strlen.o [8]
+_timer                  0xfe10'0010     0x4  Data  Lc  u2a16.o [3]
+_timer_handler            0x7f'03b4    0x54  Code  Gb  main.o [6]
+_timer_set                0x7f'0550    0x1c  Code  Gb  u2a16.o [3]
+_uart                   0xfe10'000c     0x4  Data  Lc  u2a16.o [3]
+_uart_clear_rxirq         0x7f'053c    0x14  Code  Gb  u2a16.o [3]
+_uart_enable_rxirq        0x7f'0528    0x14  Code  Gb  u2a16.o [3]
+_uart_rx_handler          0x7f'0334    0x34  Code  Gb  main.o [6]
+_wfi                      0x7f'0308     0x6  Code  Lc  main.o [6]
+clear_mpu                 0x7f'00b2          Code  Gb  start.o [5]
+ipi_handler::__func__     0x7f'0868     0xc  Data  Lc  main.o [6]
+main::master_done       0xfe10'2048     0x1  Data  Lc  main.o [6]
+timer_handler::__func__
+                          0x7f'0874     0xe  Data  Lc  main.o [6]
+uart_rx_handler::__func__
+                          0x7f'0858    0x10  Data  Lc  main.o [6]
+
+
+[1] = D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\core_5045193001576873880.dir
+[2] = D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\renesas_rlin3_4423590798727589495.dir
+[3] = D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850-u2a16_14826732722053375680.dir
+[4] = D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850-u2a16_ostm_7577924563591620785.dir
+[5] = D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir
+[6] = D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\src_15346631385785888340.dir
+[7] = dbgrh4n4dfpu64nd.a
+[8] = dlrh4n4dfpu64n.a
+
+  2'134 bytes of readonly  code memory
+    130 bytes of readonly  data memory
+  8'324 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

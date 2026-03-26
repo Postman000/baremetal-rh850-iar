@@ -1,0 +1,44 @@
+###############################################################################
+#
+# IAR Assembler V3.20.1.2142/W64 for RH850                26/Mar/2026  10:50:58
+# Copyright 2012-2025 IAR Systems AB.
+#
+#    Core         =  g4mh
+#    Source file  =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\arch\rh850\exceptions.S
+#    Command line =
+#        -f
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\exceptions.o.rsp
+#        (D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\arch\rh850\exceptions.S
+#        --core g4mh --data_model large --fpu double --double=64 -o
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir
+#        -M<> -r -ld
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\List\ -I
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\arch\rh850\inc\
+#        -I D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\core\inc\ -I
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\drivers\rh850-u2a16_ostm\inc\
+#        -I
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\src\platform\rh850-u2a16\inc\
+#        -I D:\iar\ewrh850c-3.20.1\rh850\inc\c\ -D__ASSEMBLER__)
+#        --diagnostics_format=sarif_stdout --dependencies=n
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\exceptions.o.iar_deps
+#        --dynamic_output
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\exceptions.o.iar_dynout
+#    List file    =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\List\exceptions.lst
+#    Object file  =
+#        D:\Application\RH850_PROJECTS\iar_adapt\baremetal\Debug\Obj\rh850_8105892643767542596.dir\exceptions.o
+#
+###############################################################################
+
+##############################################################################
+# Module exceptions                                                          #
+##############################################################################
+
+ 
+ 966 bytes in section .text   , module exceptions
+ 
+ 966 bytes of CODE memory  in module exceptions
+
+Errors: none
+Warnings: none

@@ -1,0 +1,113 @@
+//-------------------------------------------------------------------------
+// ILINK command file for Bare-metal Guest OS (Bao Hypervisor VM)
+// Translated from GCC linker.ld
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// Memory Region Definitions
+// Matched exactly to the original GCC linker script
+//-------------------------------------------------------------------------
+define memory mem with size = 4G;
+
+// FLASH: Origin = 0x7F0000, Length = 0x10000 (64KB)
+define region FLASH_region = mem:[from 0x007F0000 size 0x00010000];
+
+// RAM: Origin = 0xFE100000, Length = 0x00080000 (512KB)
+define region RAM_region   = mem:[from 0xFE100000 size 0x00080000];
+
+//-------------------------------------------------------------------------
+// Initialization Configuration
+//-------------------------------------------------------------------------
+// Instruct IAR to generate initialization payloads (.data_init) in FLASH
+// to be copied to RAM at runtime.
+initialize by copy { rw };
+
+// Do not auto-initialize BSS. Our custom boot.S handles the zeroing.
+do not initialize  { section .bss, section .sbss, zi };
+
+//-------------------------------------------------------------------------
+// IAR Base Blocks (Required for RH850 GP/TP addressing)
+//-------------------------------------------------------------------------
+define block TP_BLOCK with static base TP, alignment = 8, maximum size = 64K {
+  ro section .sconst,
+  ro section .pcconst16
+};
+
+define block TP23_BLOCK with alignment = 8, maximum size = 8M {
+  ro section .sconst23,
+  ro section .pcconst23,
+  midway block TP_BLOCK
+};
+
+define block SBSS_BLOCK with static base GP, alignment = 8, maximum size = 64K {
+  rw section .sbss*,
+  rw section .sdata*
+};
+
+//-------------------------------------------------------------------------
+// Custom Blocks for boot.S Compatibility
+//-------------------------------------------------------------------------
+// DATA_INIT holds the initial values in FLASH (Load Address / LMA)
+define block DATA_INIT with alignment = 8 { 
+    ro section .data_init, 
+    ro section .sdata_init 
+};
+
+// DATA holds the working variables in RAM (Virtual Address / VMA)
+define block DATA with alignment = 8 { 
+    rw section .data, 
+    block SBSS_BLOCK 
+};
+
+// BSS holds zero-initialized variables in RAM
+define block BSS with alignment = 8 { 
+    zi section .bss, 
+    zi 
+};
+
+// Stack configuration (0x2000 = 8KB, translated from . = . + 0x2000)
+define block CSTACK with alignment = 16, size = 0x2000 { };
+define block HEAP   with alignment = 16, size = 0x1000 { };
+
+//-------------------------------------------------------------------------
+// Exported Symbols for boot.S assembly
+//-------------------------------------------------------------------------
+// These symbols dynamically calculate addresses so boot.S knows where to copy
+define exported symbol __data_load_start = start(DATA_INIT);
+define exported symbol __data_load_end   = end(DATA_INIT);
+define exported symbol __data_start      = start(DATA);
+define exported symbol __bss_start       = start(BSS);
+define exported symbol __bss_end         = end(BSS);
+
+// Stack and Heap base pointers
+define exported symbol _stack_base       = start(CSTACK);
+define exported symbol _heap_base        = start(HEAP);
+
+// Global pointer for RH850 small data area addressing
+define exported symbol __gp              = __iar_static_base$$GP;
+
+//-------------------------------------------------------------------------
+// Placement Directives
+//-------------------------------------------------------------------------
+
+// 1. Force the entry point (.start) to the absolute beginning of FLASH (0x7F0000)
+place at start of FLASH_region { ro section .start };
+
+// 2. Place the rest of the code, read-only data, and DATA_INIT payload in FLASH
+place in FLASH_region { 
+    ro code, 
+    ro section .text,
+    ro section .const,
+    ro section .rodata,
+    ro data, 
+    block TP23_BLOCK,
+    block DATA_INIT
+};
+
+// 3. Place DATA, BSS, and Stack in RAM (0xFE100000)
+place at start of RAM_region { 
+    block DATA, 
+    block BSS, 
+    block CSTACK,
+    block HEAP
+};

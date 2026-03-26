@@ -1,0 +1,64 @@
+//-------------------------------------------------------------------------
+// ILINK command file for Bare-metal Guest OS (Bao Hypervisor VM)
+// Translated from GCC linker.ld
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// Memory Region Definitions
+// Matched exactly to the original GCC linker script
+//-------------------------------------------------------------------------
+define memory mem with size = 4G;
+
+define region FLASH_region = mem:[from 0x007F0000 size 0x00010000];
+define region RAM_region   = mem:[from 0xFE100000 size 0x00080000];
+
+initialize by copy { rw };
+do not initialize  { section .bss, section .sbss, zi };
+
+//-------------------------------------------------------------------------
+// IAR Base Blocks (Required for RH850 GP/TP addressing)
+//-------------------------------------------------------------------------
+define block TP_BLOCK with static base TP, alignment = 8, maximum size = 64K {
+  ro section .sconst, ro section .pcconst16
+};
+define block TP23_BLOCK with alignment = 8, maximum size = 8M {
+  ro section .sconst23, ro section .pcconst23, midway block TP_BLOCK
+};
+define block SBSS_BLOCK with static base GP, alignment = 8, maximum size = 64K {
+  rw section .sbss*, rw section .sdata*
+};
+
+define block CSTACK with alignment = 16, size = 0x2000 { };
+
+//-------------------------------------------------------------------------
+// Custom Blocks for boot.S Compatibility
+//-------------------------------------------------------------------------
+// DATA_INIT holds the initial values in FLASH (Load Address / LMA)
+define block APP_ROM_IMG with fixed order {
+    ro section .start,
+    ro section .vector_table,
+    ro code,
+    ro section .text*,
+    ro section .const*,
+    ro section .rodata*,
+    ro section .pcconst32,       
+    ro section .iar.init_table,
+    block TP23_BLOCK,
+    section *_init       
+};
+
+define block APP_RAM_IMG with fixed order {
+    rw,
+    block SBSS_BLOCK,
+    
+    rw section .mark_bss_start,
+    zi section .bss,
+    zi,
+    rw section .mark_bss_end,
+    
+    rw section .mark_stack_base,
+    block CSTACK
+};
+
+place at start of FLASH_region { block APP_ROM_IMG };
+place at start of RAM_region   { block APP_RAM_IMG };

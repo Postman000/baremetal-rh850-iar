@@ -1,0 +1,18 @@
+# ninja log v6
+19	1176	7961966582521474	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/rh850_8105892643767542596.dir/irq.o	ff893b5f9706c127
+60	263	7961966582935730	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/List/exceptions.lst	5eeb4feb22210b5e
+49	280	7961966582820917	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/rh850-u2a16_14826732722053375680.dir/u2a16.o	848730df2b7b8b5a
+8	601	7961966582406690	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/rh850_8105892643767542596.dir/init.o	2f242b28cf1dbd85
+38	1185	7961966582711124	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/renesas_rlin3_4423590798727589495.dir/renesas_rlin3.o	3997062afb65a7a9
+67	247	7961966583000589	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/rh850_8105892643767542596.dir/start.o	8893e378c568c2bc
+15	1148	7961966582476570	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/rh850_8105892643767542596.dir/intc.o	77962328b68513a0
+23	223	7961966582561399	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/core_5045193001576873880.dir/irq.o	f791764e77452000
+67	247	7961966583000589	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/List/start.lst	8893e378c568c2bc
+55	1222	7961966582880808	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/src_15346631385785888340.dir/main.o	9694fb3150f1f2fa
+32	1397	7961966582651261	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/core_5045193001576873880.dir/virtio_console.o	fac693c5a31f6894
+1609	1623	7961966598420285	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Exe/baremetal.srec	3d8de367c5bd30e9
+28	1231	7961966582606346	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/core_5045193001576873880.dir/retarget.o	2d036273f7b24b54
+60	263	7961966582935730	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/rh850_8105892643767542596.dir/exceptions.o	5eeb4feb22210b5e
+44	1152	7961966582766045	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Obj/rh850-u2a16_ostm_7577924563591620785.dir/rh850-u2a16_ostm.o	3ffddafcff4bec93
+1400	1600	7961966596324184	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/Exe/baremetal.out	e7e9f754c68d75c1
+1400	1600	7961966596324184	D:/Application/RH850_PROJECTS/iar_adapt/baremetal/Debug/List/baremetal.map	e7e9f754c68d75c1
